@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Exames | Vital Lab</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-light d-block"> <nav class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <span class="navbar-brand mb-0 h1 text-danger fw-bold">VITAL LAB</span>
+            <button onclick="logout()" class="btn btn-outline-light btn-sm">Sair <i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </nav>
+
+    <div class="container mt-5" id="dashboard">
+        <div class="header-dash d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-0">Olá, <span id="client-name" class="text-danger">...</span></h3>
+                <p class="text-muted">Confira abaixo o status dos seus exames.</p>
+            </div>
+        </div>
+
+        <div class="card-exames shadow-sm">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Exame</th>
+                            <th>Data Coleta</th>
+                            <th>Status</th>
+                            <th>Pagamento</th>
+                            <th class="text-end">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="exames-list">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
+    <script>
+        // Carrega os dados assim que a página abre
+        window.onload = carregarExames;
+    </script>
+</body>
+</html>

@@ -1,0 +1,224 @@
+/* ============================================================
+   1. CONFIGURAÇÕES GLOBAIS E VARIÁVEIS
+   ============================================================ */
+:root {
+    --primary-red: #cc0000;
+    --dark-red: #a30000;
+    --dark-gray: #1a1a1a;
+    --medium-gray: #4a4a4a;
+    --light-gray: #f8f9fa;
+    --white: #ffffff;
+    --success: #28a745;
+    --warning: #ffc107;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --font-main: 'Montserrat', sans-serif;
+}
+
+body {
+    background-color: var(--light-gray);
+    font-family: var(--font-main);
+    color: var(--dark-gray);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* ============================================================
+   2. PÁGINA INICIAL (index.html)
+   ============================================================ */
+.hero-section {
+    height: 85vh;
+    background: linear-gradient(rgba(204, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), 
+                url('https://images.unsplash.com/photo-1579152276503-3151b238324d?auto=format&fit=crop&w=1350&q=80');
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+}
+
+.btn-resultado {
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+}
+
+.card-exame {
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 20px;
+    cursor: default;
+}
+
+.card-exame:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    background: var(--primary-red);
+    color: white;
+}
+
+.card-exame:hover .text-danger, 
+.card-exame:hover .icon-box i {
+    color: white !important;
+}
+
+.icon-box {
+    width: 70px;
+    height: 70px;
+    background: #fff0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto;
+    transition: 0.3s;
+}
+
+/* ============================================================
+   3. TELA DE LOGIN (login.html)
+   ============================================================ */
+.login-body { /* Aplicar esta classe no body apenas no login.html se desejar centralizar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin: 50px auto; /* Para quando não estiver centralizado pelo flex */
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    border: 3px solid var(--primary-red);
+    padding: 5px;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+input:focus {
+    border-color: var(--primary-red);
+    outline: none;
+}
+
+.btn-login {
+    background-color: var(--primary-red);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-login:hover {
+    background-color: var(--dark-red);
+}
+
+/* ============================================================
+   4. DASHBOARD (dashboard.html)
+   ============================================================ */
+.card-exames {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 50px;
+}
+
+/* Tabela Personalizada */
+.table thead th {
+    background-color: var(--light-gray);
+    border: none;
+    color: var(--medium-gray);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 15px;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 15px;
+}
+
+/* Badges de Status */
+.badge {
+    padding: 8px 15px;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.ready { background: #e8f5e9; color: var(--success); }
+.pending { background: #fff3e0; color: #ef6c00; }
+.paid { background: #e3f2fd; color: #1976d2; }
+.unpaid { background: #ffebee; color: var(--primary-red); }
+
+/* ============================================================
+   5. RESPONSIVIDADE
+   ============================================================ */
+@media (max-width: 768px) {
+    .hero-section { text-align: center; height: auto; padding: 100px 0; }
+    
+    /* Tabela mobile-friendly */
+    .table-responsive table, 
+    .table-responsive thead, 
+    .table-responsive tbody, 
+    .table-responsive th, 
+    .table-responsive td, 
+    .table-responsive tr { 
+        display: block; 
+    }
+    
+    .table-responsive thead { display: none; }
+    
+    .table-responsive tr { margin-bottom: 15px; border: 1px solid #eee; border-radius: 10px; padding: 10px; }
+    
+    .table-responsive td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    
+    .table-responsive td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 15px;
+        font-weight: 700;
+        color: var(--primary-red);
+    }
+}

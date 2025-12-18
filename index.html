@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Lab | Laboratório de Análises Clínicas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="vitallab.jpg" alt="Logo Vital Lab" width="60" class="rounded-circle me-2">
+                <span class="fw-bold text-danger">VITAL LAB</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item"><a class="nav-link" href="#inicio">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#procedimentos">Exames</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-danger btn-resultado" href="login.html">
+                            <i class="fas fa-file-medical me-2"></i>Resultados Online
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="inicio" class="hero-section text-white d-flex align-items-center">
+        <div class="container text-center text-lg-start">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Tecnologia e Precisão nos seus <span class="text-warning">Resultados</span></h1>
+                    <p class="lead mb-4">O Vital Lab oferece o que há de mais moderno em análises clínicas em Cajazeiras e região.</p>
+                    <a href="https://wa.me/SEUNUMERO" class="btn btn-light btn-lg fw-bold text-danger">
+                        <i class="fab fa-whatsapp me-2"></i>Agendar Exame
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="procedimentos" class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Nossos Procedimentos</h2>
+                <div class="line mx-auto"></div>
+                <p class="text-muted">Conheça alguns dos principais exames realizados em nossa unidade</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-exame h-100 border-0 shadow-sm text-center p-4">
+                        <div class="icon-box mb-3"><i class="fas fa-droplet fa-2x text-danger"></i></div>
+                        <h4>Hematologia</h4>
+                        <p>Hemograma completo, tipagem sanguínea e coagulograma com rapidez.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-exame h-100 border-0 shadow-sm text-center p-4">
+                        <div class="icon-box mb-3"><i class="fas fa-microscope fa-2x text-danger"></i></div>
+                        <h4>Bioquímica</h4>
+                        <p>Glicemia, Colesterol, Triglicerídeos e funções hepáticas/renais.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-exame h-100 border-0 shadow-sm text-center p-4">
+                        <div class="icon-box mb-3"><i class="fas fa-vial fa-2x text-danger"></i></div>
+                        <h4>Imunologia</h4>
+                        <p>Testes sorológicos, hormônios e marcadores tumorais de alta precisão.</p>
+                    </div>
+                </div>
+                </div>
+        </div>
+    </section>
+
+    <footer id="contato" class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <img src="vitallab.jpg" alt="Logo" width="50" class="rounded-circle mb-3">
+            <p class="mb-1">Vital Lab - Laboratório de Análises Clínicas</p>
+            <p class="small text-muted">Rua Exemplo, 123 - Cajazeiras/PB</p>
+            <div class="social-links">
+                <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-white"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

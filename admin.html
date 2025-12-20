@@ -8,7 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css"> <link rel="stylesheet" href="admin.css"> </head>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="admin.css"> 
+</head>
 <body class="bg-light">
 
     <div class="container py-5">
@@ -33,10 +35,13 @@
                         </div>
                         <button onclick="cadastrarPaciente()" class="btn btn-danger w-100">Cadastrar</button>
                         
-                        <div id="resultadoCadastro" class="result-box mt-3 text-center">
+                        <div id="resultadoCadastro" class="result-box mt-3 text-center" style="display:none;">
                             <div class="fs-5">User: <strong id="resUser">...</strong></div>
                             <div class="fs-5">Senha: <strong id="resSenha" class="text-danger">...</strong></div>
                             <div class="small mt-1">ID: <span id="resId">...</span></div>
+                            <div class="alert alert-success p-1 mt-2 small">
+                                <i class="fas fa-check"></i> ID enviado para o Bloco 3!
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -54,7 +59,7 @@
                             </div>
                         </div>
 
-                        <div id="resultadoBusca" class="result-box mt-3 text-center" style="border-color: #0d6efd; background-color: #f0f8ff;">
+                        <div id="resultadoBusca" class="result-box mt-3 text-center" style="display:none; border-color: #0d6efd; background-color: #f0f8ff;">
                             <h6 class="fw-bold text-primary" id="buscNome">...</h6>
                             <p class="mb-1">CPF: <span id="buscCpf">...</span></p>
                             <hr>
@@ -69,15 +74,15 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card admin-card shadow-sm h-100">
-                    <div class="card-header bg-secondary text-white fw-bold">3. Lançar Exame</div>
+                <div class="card admin-card shadow-sm h-100" style="border-left-color: #198754;">
+                    <div class="card-header bg-success text-white fw-bold">3. Lançar Exame</div>
                     <div class="card-body">
-                        <div class="alert alert-info small p-2">
-                            <i class="fas fa-info-circle"></i> Busque o paciente ao lado ou digite o ID.
+                        <div class="alert alert-success small p-2 mb-3">
+                            <i class="fas fa-arrow-left"></i> O ID vem do Bloco 1 ou 2.
                         </div>
                         <div class="mb-3">
                             <label>ID do Paciente</label>
-                            <input type="number" id="exameIdPaciente" class="form-control fw-bold text-center fs-5" placeholder="0">
+                            <input type="number" id="exameIdPaciente" class="form-control fw-bold text-center fs-5" placeholder="0" readonly style="background-color: #e8f5e9;">
                         </div>
                         <div class="mb-3">
                             <label>Nome do Exame</label>
@@ -90,45 +95,14 @@
                                 <option value="Outro">Outro</option>
                             </select>
                         </div>
-                        <button onclick="lancarExame()" class="btn btn-secondary w-100">Adicionar Exame</button>
+                        <button onclick="lancarExame()" class="btn btn-success w-100">Adicionar Exame</button>
                     </div>
                 </div>
             </div>
 
-        </div>
-
-            <div class="col-md-5">
-                <div class="card admin-card shadow-sm h-100">
-                    <div class="card-header bg-secondary text-white fw-bold">2. Lançar Exame</div>
-                    <div class="card-body">
-                        <div class="alert alert-info small">
-                            <i class="fas fa-info-circle"></i> Use o ID gerado ao lado para vincular o exame.
-                        </div>
-                        <div class="mb-3">
-                            <label>ID do Paciente</label>
-                            <input type="number" id="exameIdPaciente" class="form-control" placeholder="Ex: 50">
-                        </div>
-                        <div class="mb-3">
-                            <label>Nome do Exame</label>
-                            <select id="exameNome" class="form-select">
-                                <option value="Hemograma Completo">Hemograma Completo</option>
-                                <option value="Glicemia em Jejum">Glicemia em Jejum</option>
-                                <option value="Colesterol Total">Colesterol Total</option>
-                                <option value="Urina EAS">Urina EAS</option>
-                                <option value="Teste de Gravidez (Beta HCG)">Teste de Gravidez (Beta HCG)</option>
-                                <option value="Outro">Outro (Editar na Planilha)</option>
-                            </select>
-                        </div>
-                        <button onclick="lancarExame()" class="btn btn-secondary w-100">Adicionar Exame</button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
+        </div> </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="admin.js"></script>
 </body>
-
 </html>

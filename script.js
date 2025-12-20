@@ -125,16 +125,23 @@ function renderizarTabela(exames, elementoTabela) {
         let statusClass = (statusNormalizado === 'pronto' || temLink) ? 'ready' : 'pending';
         let pagClass = pagamentoNormalizado === 'pago' ? 'paid' : 'unpaid';
 
-        // Lógica dos Botões
+        // === LÓGICA DOS BOTÕES ATUALIZADA ===
         if (pagamentoNormalizado === 'pendente') {
+            // Se deve: Mostra botão de Pagar
             acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
-        } else if (pagamentoNormalizado === 'pago' && (temLink || statusNormalizado === 'pronto')) {
+        
+        } else if (pagamentoNormalizado === 'pago') {
+            // Se pagou: Verifica se o PDF já chegou
             if(temLink) {
+                 // Tem PDF: Botão Verde
                  acao = `<a href="${ex.link}" target="_blank" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-download me-1"></i> PDF</a>`;
             } else {
-                 acao = `<span class="text-danger small">Erro: Link off</span>`;
+                 // Pagou mas não tem PDF: Mostra Aguarde (Ampulheta) em vez de Erro
+                 acao = `<span class="text-muted small"><i class="fas fa-hourglass-half"></i> Aguarde</span>`;
             }
+        
         } else {
+            // Qualquer outro caso
             acao = `<span class="text-muted small"><i class="fas fa-hourglass-half"></i> Aguarde</span>`;
         }
 
@@ -149,7 +156,6 @@ function renderizarTabela(exames, elementoTabela) {
     });
     elementoTabela.innerHTML = html;
 }
-
 
 // ======================================================
 // 3. FUNÇÕES GERAIS (Logout e Pix)
@@ -206,5 +212,6 @@ function copiarPix() {
     btn.innerText = "Copiado!";
     setTimeout(() => { btn.innerText = originalText; }, 2000);
 }
+
 
 

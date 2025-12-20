@@ -117,24 +117,30 @@ function renderizarTabela(exames, elementoTabela) {
     exames.forEach(ex => {
         let acao = '';
         
-        // Normaliza textos para evitar erros de maiúscula/minúscula
-        let statusNormalizado = ex.status ? ex.status.trim().toLowerCase() : "";
+        // Limpa os textos para comparar
+        let statusTexto = ex.status ? String(ex.status).trim() : "";
+        let statusParaComparar = statusTexto.toLowerCase();
         let pagamentoNormalizado = ex.pagamento ? ex.pagamento.trim().toLowerCase() : "";
         let temLink = ex.link && ex.link.length > 10;
         
-        // === DEFINIÇÃO DAS CORES (INFALÍVEL) ===
-        // Se estiver pronto OU tiver link => VERDE (#198754)
-        // Se não => LARANJA (#fd7e14)
-        let corBadge = (statusNormalizado === 'pronto' || temLink) 
-            ? "background-color: #198754 !important; color: white;" 
-            : "background-color: #fd7e14 !important; color: white;";
-            
-        // Pagamento: Verde se pago, Vermelho se não
-        let corPag = pagamentoNormalizado === 'pago' 
-            ? "background-color: #198754 !important; color: white;" 
-            : "background-color: #dc3545 !important; color: white;";
+        // === COR DO STATUS (AGORA DEPENDE SÓ DO TEXTO) ===
+        // Padrão é Laranja (Processando)
+        let corBg = "#fd7e14"; // Laranja
+        
+        // Só vira Verde se estiver escrito explicitamente "Pronto"
+        if (statusParaComparar === 'pronto') {
+            corBg = "#198754"; // Verde
+        }
 
-        // === BOTÕES ===
+        // Estilo forçado inline para garantir que o CSS não atrapalhe
+        let styleStatus = `background-color: ${corBg} !important; color: white !important; border: none !important;`;
+
+        // Cor do Pagamento
+        let corPag = pagamentoNormalizado === 'pago' 
+            ? "background-color: #198754 !important; color: white !important;" 
+            : "background-color: #dc3545 !important; color: white !important;";
+
+        // === BOTÕES (AÇÃO) ===
         if (pagamentoNormalizado === 'pendente') {
             acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
         } else if (pagamentoNormalizado === 'pago') {
@@ -153,7 +159,7 @@ function renderizarTabela(exames, elementoTabela) {
                 <td data-label="Data">${ex.data}</td>
                 
                 <td data-label="Status">
-                    <span class="badge" style="${corBadge}">${ex.status}</span>
+                    <span class="badge" style="${styleStatus}">${statusTexto}</span>
                 </td>
                 
                 <td data-label="Pagamento">
@@ -164,8 +170,7 @@ function renderizarTabela(exames, elementoTabela) {
             </tr>`;
     });
     elementoTabela.innerHTML = html;
-}
-// ======================================================
+}// ======================================================
 // 3. FUNÇÕES GERAIS (Logout e Pix)
 // ======================================================
 
@@ -220,6 +225,7 @@ function copiarPix() {
     btn.innerText = "Copiado!";
     setTimeout(() => { btn.innerText = originalText; }, 2000);
 }
+
 
 
 

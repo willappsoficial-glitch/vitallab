@@ -152,25 +152,50 @@ function logout() {
 }
 
 function pagarPix(nomeExame) {
-    // Aqui usamos o SweetAlert2 para um modal bonito
+    // 1. Cole aqui o "Pix Copia e Cola" gerado no app do banco
+    const pixPayload = "00020126580014BR.GOV.BCB.PIX0136.....00020126330014BR.GOV.BCB.PIX0111092503854715204000053039865802BR5925Francisco Williano Pereir6009SAO PAULO62140510xS9tq7FMms6304B42F.....6304E2CA"; 
+    
+    // Codifica para URL (para garantir que funcione na API)
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixPayload)}`;
+
     Swal.fire({
         title: 'Pagamento via PIX',
         html: `
-            <p class="mb-3">Libere o resultado de <strong>${nomeExame}</strong> instantaneamente.</p>
-            <div class="bg-light p-3 rounded mb-3 border">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=00020126330014BR.GOV.BCB.PIX0111123456789015204000053039865802BR5913VITAL LAB6008CAJAZEIRAS62070503***6304ABCD" class="img-fluid" style="max-width: 150px">
+            <p class="mb-3">Libere o resultado de <strong>${nomeExame}</strong>.</p>
+            
+            <div class="bg-white p-3 rounded mb-3 border d-inline-block">
+                <img src="${qrCodeUrl}" class="img-fluid" style="max-width: 200px">
             </div>
-            <p class="small text-muted">Aponte a câmera do seu celular</p>
+            
+            <p class="small text-muted mb-2">Aponte a câmera do seu celular</p>
+            
+            <p class="small text-muted">Ou copie o código abaixo:</p>
+            
+            <div class="input-group mb-3">
+                <input type="text" class="form-control form-control-sm" value="${pixPayload}" id="pixCopiaCola" readonly>
+                <button class="btn btn-outline-secondary btn-sm" onclick="copiarPix()">Copiar</button>
+            </div>
         `,
         confirmButtonText: 'Já fiz o pagamento',
-        confirmButtonColor: '#cc0000',
+        confirmButtonColor: '#cc0000', // Vermelho Vital Lab
         showCancelButton: true,
-        cancelButtonText: 'Cancelar'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire('Obrigado!', 'Seu pagamento está sendo processado. A página irá atualizar em instantes.', 'success');
-            // Opcional: Recarregar a página para ver se o status mudou (se o backend já tiver atualizado)
-            // location.reload(); 
-        }
+        cancelButtonText: 'Fechar'
     });
+}
+
+// Função auxiliar para copiar o código (UX melhorada)
+function copiarPix() {
+    const copyText = document.getElementById("pixCopiaCola");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); 
+    navigator.clipboard.writeText(copyText.value);
+    
+    // Feedback visual rápido
+    const btn = document.querySelector('.input-group button');
+    const originalText = btn.innerText;
+    btn.innerText = "Copiado!";
+    setTimeout(() => { btn.innerText = originalText; }, 2000);
+}
+    });
+
 }

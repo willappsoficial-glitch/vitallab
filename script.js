@@ -117,31 +117,33 @@ function renderizarTabela(exames, elementoTabela) {
     exames.forEach(ex => {
         let acao = '';
         
-        // Normaliza para minúsculo para comparar
+        // Normaliza textos para evitar erros de maiúscula/minúscula
         let statusNormalizado = ex.status ? ex.status.trim().toLowerCase() : "";
         let pagamentoNormalizado = ex.pagamento ? ex.pagamento.trim().toLowerCase() : "";
         let temLink = ex.link && ex.link.length > 10;
-
-        let statusClass = (statusNormalizado === 'pronto' || temLink) ? 'ready' : 'pending';
-        let pagClass = pagamentoNormalizado === 'pago' ? 'paid' : 'unpaid';
-
-        // === LÓGICA DOS BOTÕES ATUALIZADA ===
-        if (pagamentoNormalizado === 'pendente') {
-            // Se deve: Mostra botão de Pagar
-            acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
         
+        // === DEFINIÇÃO DAS CORES (INFALÍVEL) ===
+        // Se estiver pronto OU tiver link => VERDE (#198754)
+        // Se não => LARANJA (#fd7e14)
+        let corBadge = (statusNormalizado === 'pronto' || temLink) 
+            ? "background-color: #198754 !important; color: white;" 
+            : "background-color: #fd7e14 !important; color: white;";
+            
+        // Pagamento: Verde se pago, Vermelho se não
+        let corPag = pagamentoNormalizado === 'pago' 
+            ? "background-color: #198754 !important; color: white;" 
+            : "background-color: #dc3545 !important; color: white;";
+
+        // === BOTÕES ===
+        if (pagamentoNormalizado === 'pendente') {
+            acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
         } else if (pagamentoNormalizado === 'pago') {
-            // Se pagou: Verifica se o PDF já chegou
             if(temLink) {
-                 // Tem PDF: Botão Verde
                  acao = `<a href="${ex.link}" target="_blank" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-download me-1"></i> PDF</a>`;
             } else {
-                 // Pagou mas não tem PDF: Mostra Aguarde (Ampulheta) em vez de Erro
                  acao = `<span class="text-muted small"><i class="fas fa-hourglass-half"></i> Aguarde</span>`;
             }
-        
         } else {
-            // Qualquer outro caso
             acao = `<span class="text-muted small"><i class="fas fa-hourglass-half"></i> Aguarde</span>`;
         }
 
@@ -149,14 +151,20 @@ function renderizarTabela(exames, elementoTabela) {
             <tr>
                 <td data-label="Exame"><strong>${ex.nome}</strong></td>
                 <td data-label="Data">${ex.data}</td>
-                <td data-label="Status"><span class="badge ${statusClass}">${ex.status}</span></td>
-                <td data-label="Pagamento"><span class="badge ${pagClass}">${ex.pagamento}</span></td>
+                
+                <td data-label="Status">
+                    <span class="badge" style="${corBadge}">${ex.status}</span>
+                </td>
+                
+                <td data-label="Pagamento">
+                    <span class="badge" style="${corPag}">${ex.pagamento}</span>
+                </td>
+                
                 <td data-label="Ação" class="text-end">${acao}</td>
             </tr>`;
     });
     elementoTabela.innerHTML = html;
 }
-
 // ======================================================
 // 3. FUNÇÕES GERAIS (Logout e Pix)
 // ======================================================
@@ -212,6 +220,7 @@ function copiarPix() {
     btn.innerText = "Copiado!";
     setTimeout(() => { btn.innerText = originalText; }, 2000);
 }
+
 
 
 

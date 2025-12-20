@@ -1,162 +1,51 @@
-// ==========================================
-// CONFIGURAÇÃO
-// ==========================================
-// COLE ABAIXO A MESMA URL DO APPSCRIPT QUE ESTÁ NO SCRIPT.JS
+/**
+ * CONFIGURAÇÃO DO ADMIN
+ * Substitua pela sua URL atual do Apps Script (Verifique se não mudou)
+ */
 const API_URL = "https://script.google.com/macros/s/AKfycbyVI4pXYIM6GSEAl-TuqKdNPjaNIW7TEWM-rq9UdVh343htO3rb2GL8mVD1PDlaCcz77Q/exec"; 
 
-
 // ==========================================
-// FUNÇÃO 1: CADASTRAR PACIENTE
+// 1. FUNÇÃO: CADASTRAR PACIENTE
 // ==========================================
 async function cadastrarPaciente() {
-    const nomeInput = document.getElementById('cadNome');
-    const cpfInput = document.getElementById('cadCpf');
-    const resultBox = document.getElementById('resultadoCadastro');
+    const nome = document.getElementById('cadNome').value;
+    const cpf = document.getElementById('cadCpf').value;
+    const boxResultado = document.getElementById('resultadoCadastro');
 
-    // Validação Simples
-    if(!nomeInput.value || !cpfInput.value) {
-        Swal.fire('Erro', 'Por favor, preencha o Nome e o CPF.', 'error');
-        return;
+    if (!nome || !cpf) {
+        return Swal.fire('Atenção', 'Preencha Nome e CPF', 'warning');
     }
 
-    // Mostra carregamento
-    Swal.showLoading();
+    // Mostra carregando
+    Swal.fire({ title: 'Cadastrando...', didOpen: () => Swal.showLoading() });
 
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({ 
-                action: 'cadastrarPaciente', 
-                nome: nomeInput.value, 
-                cpf: cpfInput.value 
+            body: JSON.stringify({
+                action: 'cadastrarPaciente',
+                nome: nome,
+                cpf: cpf
             })
         });
 
         const res = await response.json();
         Swal.close();
 
-        if(res.success) {
-            // Exibe a caixa verde com os dados
-            resultBox.style.display = 'block';
-            document.getElementById('resUser').innerText = cpfInput.value;
+        if (res.success) {
+            Swal.fire('Sucesso', 'Paciente cadastrado!', 'success');
+            
+            // Mostra os dados na tela
+            boxResultado.style.display = 'block';
+            document.getElementById('resUser').innerText = cpf;
             document.getElementById('resSenha').innerText = res.senha;
             document.getElementById('resId').innerText = res.id;
             
-            // Facilitação: Joga o ID direto para o campo de exame
-            document.getElementById('exameIdPaciente').value = res.id;
-            
-            // Feedback sonoro ou visual extra (opcional)
-            Swal.fire({
-                icon: 'success',
-                title: 'Cadastrado!',
-                text: 'Entregue a senha ao paciente.',
-                timer: 2000,
-                showConfirmButton: false
-            });
-
-            // Limpa os campos de cadastro para evitar duplicidade
-            nomeInput.value = '';
-            cpfInput.value = '';
-
+            // Limpa os campos
+            document.getElementById('cadNome').value = '';
+            document.getElementById('cadCpf').value = '';
         } else {
-            Swal.fire('Erro no Cadastro', res.message, 'error');
-        }
-
-    } catch (error) {
-        console.error(error);
-        Swal.fire('Erro de Conexão', 'Não foi possível conectar ao servidor.', 'error');
-    }
-}
-
-
-// ==========================================
-// FUNÇÃO 2: LANÇAR EXAME
-// ==========================================
-async function lancarExame() {
-    const idInput = document.getElementById('exameIdPaciente');
-    const exameInput = document.getElementById('exameNome');
-
-    if(!idInput.value) {
-        Swal.fire('Atenção', 'Informe o ID do paciente (Número do sistema).', 'warning');
-        return;
-    }
-
-    Swal.showLoading();
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ 
-                action: 'salvarExame', 
-                idPaciente: idInput.value, 
-                nomeExame: exameInput.value 
-            })
-        });
-        
-        Swal.close();
-        
-        // Como o backend não retorna erro específico se o ID não existir (apenas salva),
-        // assumimos sucesso se a conexão funcionou.
-        Swal.fire('Sucesso', 'Exame lançado na fila de processamento!', 'success');
-        
-        // Limpa o campo de exame para lançar outro se necessário
-        // idInput.value = ''; // (Opcional: manter o ID caso queira lançar vários exames pro mesmo paciente)
-
-    } catch (error) {
-        console.error(error);
-        Swal.fire('Erro', 'Falha ao lançar exame.', 'error');
-    }
-}
-
-
-// ==========================================
-// FUNÇÃO 3: UTILITÁRIOS
-// ==========================================
-function copiarDados() {
-    const id = document.getElementById('resId').innerText;
-    navigator.clipboard.writeText(id).then(() => {
-        const btn = document.querySelector('.btn-outline-success');
-        const originalText = btn.innerText;
-        
-        btn.innerText = 'Copiado!';
-        btn.classList.add('active');
-        
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.classList.remove('active');
-        }, 2000);
-    });
-
-}
-
-// ==========================================
-// FUNÇÃO: BUSCAR PACIENTE (NOVA)
-// ==========================================
-async function buscarPaciente() {
-    const termo = document.getElementById('buscaTermo').value;
-    const box = document.getElementById('resultadoBusca');
-
-    if(!termo) return Swal.fire('Erro', 'Digite um nome ou CPF', 'warning');
-
-    Swal.showLoading();
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ action: 'buscarPaciente', termo: termo })
-        });
-
-        const res = await response.json();
-        Swal.close();
-
-        if(res.success) {
-            box.style.display = 'block';
-            document.getElementById('buscNome').innerText = res.nome;
-            document.getElementById('buscCpf').innerText = res.cpf;
-            document.getElementById('buscId').innerText = res.id;
-        } else {
-            box.style.display = 'none';
-            Swal.fire('Não encontrado', 'Verifique o nome ou CPF.', 'info');
+            Swal.fire('Erro', res.message, 'error');
         }
 
     } catch (error) {
@@ -165,13 +54,105 @@ async function buscarPaciente() {
     }
 }
 
-// Função para jogar o ID encontrado para a caixa de lançamento
+// ==========================================
+// 2. FUNÇÃO: BUSCAR PACIENTE (NOVA)
+// ==========================================
+async function buscarPaciente() {
+    const termo = document.getElementById('buscaTermo').value;
+    const box = document.getElementById('resultadoBusca');
+
+    if (!termo) {
+        return Swal.fire('Atenção', 'Digite um Nome ou CPF para buscar', 'warning');
+    }
+
+    // Feedback visual
+    const btnBusca = document.querySelector('.input-group button');
+    const iconeOriginal = btnBusca.innerHTML;
+    btnBusca.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'buscarPaciente', // Importante: Isso deve bater com o Código.gs
+                termo: termo
+            })
+        });
+
+        const res = await response.json();
+        btnBusca.innerHTML = iconeOriginal; // Restaura o ícone
+
+        if (res.success) {
+            // Mostra o resultado
+            box.style.display = 'block';
+            document.getElementById('buscNome').innerText = res.nome;
+            document.getElementById('buscCpf').innerText = res.cpf;
+            document.getElementById('buscId').innerText = res.id;
+        } else {
+            box.style.display = 'none';
+            Swal.fire('Não encontrado', 'Nenhum paciente com esse dado.', 'info');
+        }
+
+    } catch (error) {
+        console.error(error);
+        btnBusca.innerHTML = iconeOriginal;
+        Swal.fire('Erro', 'Falha na conexão ou API desatualizada.', 'error');
+    }
+}
+
+// Função auxiliar para o botão "Usar ID"
 function usarIdEncontrado() {
-    const id = document.getElementById('buscId').innerText;
-    document.getElementById('exameIdPaciente').value = id;
+    const idEncontrado = document.getElementById('buscId').innerText;
     
-    // Animação visual para mostrar que funcionou
+    if(!idEncontrado || idEncontrado === '...') return;
+
+    // Preenche o campo da direita
     const inputExame = document.getElementById('exameIdPaciente');
-    inputExame.style.backgroundColor = "#d1e7dd"; // Verde claro
+    inputExame.value = idEncontrado;
+    
+    // Animação visual (pisca verde)
+    inputExame.style.backgroundColor = "#d1e7dd"; 
+    inputExame.style.transition = "0.5s";
     setTimeout(() => { inputExame.style.backgroundColor = ""; }, 1000);
+}
+
+
+// ==========================================
+// 3. FUNÇÃO: LANÇAR EXAME
+// ==========================================
+async function lancarExame() {
+    const id = document.getElementById('exameIdPaciente').value;
+    const exame = document.getElementById('exameNome').value;
+
+    if (!id) {
+        return Swal.fire('Atenção', 'Informe o ID do paciente', 'warning');
+    }
+
+    Swal.fire({ title: 'Salvando...', didOpen: () => Swal.showLoading() });
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'salvarExame',
+                idPaciente: id,
+                nomeExame: exame
+            })
+        });
+
+        const res = await response.json();
+        Swal.close();
+
+        if (res.success) {
+            Swal.fire('Sucesso', 'Exame lançado! Aguardando upload do PDF.', 'success');
+            // Limpa o campo ID para evitar duplicidade acidental
+            document.getElementById('exameIdPaciente').value = '';
+        } else {
+            Swal.fire('Erro', res.message, 'error');
+        }
+
+    } catch (error) {
+        console.error(error);
+        Swal.fire('Erro', 'Falha na conexão.', 'error');
+    }
 }

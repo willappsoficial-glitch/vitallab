@@ -116,14 +116,24 @@ function renderizarTabela(exames, elementoTabela) {
     let html = '';
     exames.forEach(ex => {
         let acao = '';
-        let statusClass = ex.status === 'Pronto' ? 'ready' : 'pending';
-        let pagClass = ex.pagamento === 'Pago' ? 'paid' : 'unpaid';
+        
+        // Normaliza para minúsculo para comparar
+        let statusNormalizado = ex.status ? ex.status.trim().toLowerCase() : "";
+        let pagamentoNormalizado = ex.pagamento ? ex.pagamento.trim().toLowerCase() : "";
+        let temLink = ex.link && ex.link.length > 10;
+
+        let statusClass = (statusNormalizado === 'pronto' || temLink) ? 'ready' : 'pending';
+        let pagClass = pagamentoNormalizado === 'pago' ? 'paid' : 'unpaid';
 
         // Lógica dos Botões
-        if (ex.pagamento === 'Pendente') {
+        if (pagamentoNormalizado === 'pendente') {
             acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
-        } else if (ex.status === 'Pronto') {
-            acao = `<a href="${ex.link}" target="_blank" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-download me-1"></i> PDF</a>`;
+        } else if (pagamentoNormalizado === 'pago' && (temLink || statusNormalizado === 'pronto')) {
+            if(temLink) {
+                 acao = `<a href="${ex.link}" target="_blank" class="btn btn-sm btn-success shadow-sm"><i class="fas fa-download me-1"></i> PDF</a>`;
+            } else {
+                 acao = `<span class="text-danger small">Erro: Link off</span>`;
+            }
         } else {
             acao = `<span class="text-muted small"><i class="fas fa-hourglass-half"></i> Aguarde</span>`;
         }
@@ -152,10 +162,10 @@ function logout() {
 }
 
 function pagarPix(nomeExame) {
-    // 1. Cole aqui o "Pix Copia e Cola" gerado no app do banco
-    const pixPayload = "00020126580014BR.GOV.BCB.PIX0136.....00020126330014BR.GOV.BCB.PIX0111092503854715204000053039865802BR5925Francisco Williano Pereir6009SAO PAULO62140510xS9tq7FMms6304B42F.....6304E2CA"; 
+    // Código PIX fornecido
+    const pixPayload = "00020126330014BR.GOV.BCB.PIX0111092503854715204000053039865802BR5925Francisco Williano Pereir6009SAO PAULO62140510xS9tq7FMms6304B42F"; 
     
-    // Codifica para URL (para garantir que funcione na API)
+    // Codifica para URL
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixPayload)}`;
 
     Swal.fire({
@@ -183,7 +193,7 @@ function pagarPix(nomeExame) {
     });
 }
 
-// Função auxiliar para copiar o código (UX melhorada)
+// Função auxiliar para copiar o código
 function copiarPix() {
     const copyText = document.getElementById("pixCopiaCola");
     copyText.select();

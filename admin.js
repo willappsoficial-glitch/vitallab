@@ -1,14 +1,11 @@
 /**
  * CONFIGURAÇÃO DO ADMIN
- * Substitua pela sua URL atual do Apps Script (Verifique se não mudou)
+ * Verifique se a URL abaixo é a mesma do seu script.js (mesma versão implantada)
  */
 const API_URL = "https://script.google.com/macros/s/AKfycbyVI4pXYIM6GSEAl-TuqKdNPjaNIW7TEWM-rq9UdVh343htO3rb2GL8mVD1PDlaCcz77Q/exec"; 
 
 // ==========================================
-// 1. FUNÇÃO: CADASTRAR PACIENTE
-// ==========================================
-// ==========================================
-// 1. FUNÇÃO: CADASTRAR PACIENTE
+// 1. FUNÇÃO: CADASTRAR PACIENTE (CORRIGIDA)
 // ==========================================
 async function cadastrarPaciente() {
     const nome = document.getElementById('cadNome').value;
@@ -38,22 +35,32 @@ async function cadastrarPaciente() {
             Swal.fire({
                 icon: 'success',
                 title: 'Cadastrado!',
-                text: 'O ID foi enviado para o Bloco 3.',
+                text: 'ID enviado para o Bloco 3 automaticamente.',
                 timer: 2000,
                 showConfirmButton: false
             });
             
-            // Mostra os dados gerados
+            // Mostra os dados no Bloco 1
             boxResultado.style.display = 'block';
             document.getElementById('resUser').innerText = cpf;
             document.getElementById('resSenha').innerText = res.senha;
             document.getElementById('resId').innerText = res.id;
             
-            // === AUTOMATIZAÇÃO ===
-            // Joga o ID novo direto no campo do Bloco 3
-            document.getElementById('exameIdPaciente').value = res.id;
+            // === A MÁGICA ACONTECE AQUI ===
+            // Pega o campo do Bloco 3 e preenche com o ID novo
+            const inputBloco3 = document.getElementById('exameIdPaciente');
+            inputBloco3.value = res.id;
             
-            // Limpa o formulário de cadastro
+            // Animação visual (Pisca verde forte e volta ao verde claro)
+            inputBloco3.style.backgroundColor = "#198754"; // Verde escuro
+            inputBloco3.style.color = "#fff"; // Texto branco
+            
+            setTimeout(() => { 
+                inputBloco3.style.backgroundColor = "#e8f5e9"; // Volta ao original
+                inputBloco3.style.color = "#000"; 
+            }, 1000);
+
+            // Limpa o formulário de cadastro para o próximo
             document.getElementById('cadNome').value = '';
             document.getElementById('cadCpf').value = '';
             
@@ -68,7 +75,7 @@ async function cadastrarPaciente() {
 }
 
 // ==========================================
-// 2. FUNÇÃO: BUSCAR PACIENTE (NOVA)
+// 2. FUNÇÃO: BUSCAR PACIENTE
 // ==========================================
 async function buscarPaciente() {
     const termo = document.getElementById('buscaTermo').value;
@@ -78,7 +85,7 @@ async function buscarPaciente() {
         return Swal.fire('Atenção', 'Digite um Nome ou CPF para buscar', 'warning');
     }
 
-    // Feedback visual
+    // Feedback visual no botão da lupa
     const btnBusca = document.querySelector('.input-group button');
     const iconeOriginal = btnBusca.innerHTML;
     btnBusca.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
@@ -87,16 +94,15 @@ async function buscarPaciente() {
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({
-                action: 'buscarPaciente', // Importante: Isso deve bater com o Código.gs
+                action: 'buscarPaciente',
                 termo: termo
             })
         });
 
         const res = await response.json();
-        btnBusca.innerHTML = iconeOriginal; // Restaura o ícone
+        btnBusca.innerHTML = iconeOriginal;
 
         if (res.success) {
-            // Mostra o resultado
             box.style.display = 'block';
             document.getElementById('buscNome').innerText = res.nome;
             document.getElementById('buscCpf').innerText = res.cpf;
@@ -109,24 +115,26 @@ async function buscarPaciente() {
     } catch (error) {
         console.error(error);
         btnBusca.innerHTML = iconeOriginal;
-        Swal.fire('Erro', 'Falha na conexão ou API desatualizada.', 'error');
+        Swal.fire('Erro', 'Falha na conexão.', 'error');
     }
 }
 
-// Função auxiliar para o botão "Usar ID"
+// Função auxiliar para o botão "Usar ID" (Do Bloco 2 para o 3)
 function usarIdEncontrado() {
     const idEncontrado = document.getElementById('buscId').innerText;
     
     if(!idEncontrado || idEncontrado === '...') return;
 
-    // Preenche o campo da direita
-    const inputExame = document.getElementById('exameIdPaciente');
-    inputExame.value = idEncontrado;
+    const inputBloco3 = document.getElementById('exameIdPaciente');
+    inputBloco3.value = idEncontrado;
     
-    // Animação visual (pisca verde)
-    inputExame.style.backgroundColor = "#d1e7dd"; 
-    inputExame.style.transition = "0.5s";
-    setTimeout(() => { inputExame.style.backgroundColor = ""; }, 1000);
+    // Animação visual
+    inputBloco3.style.backgroundColor = "#198754";
+    inputBloco3.style.color = "#fff";
+    setTimeout(() => { 
+        inputBloco3.style.backgroundColor = "#e8f5e9"; 
+        inputBloco3.style.color = "#000"; 
+    }, 1000);
 }
 
 
@@ -138,7 +146,7 @@ async function lancarExame() {
     const exame = document.getElementById('exameNome').value;
 
     if (!id) {
-        return Swal.fire('Atenção', 'Informe o ID do paciente', 'warning');
+        return Swal.fire('Atenção', 'O campo ID está vazio. Cadastre ou Busque um paciente antes.', 'warning');
     }
 
     Swal.fire({ title: 'Salvando...', didOpen: () => Swal.showLoading() });
@@ -157,9 +165,9 @@ async function lancarExame() {
         Swal.close();
 
         if (res.success) {
-            Swal.fire('Sucesso', 'Exame lançado! Aguardando upload do PDF.', 'success');
-            // Limpa o campo ID para evitar duplicidade acidental
-            document.getElementById('exameIdPaciente').value = '';
+            Swal.fire('Sucesso', 'Exame lançado! Agora suba o PDF no AppSheet.', 'success');
+            // Opcional: Limpar o ID após lançar ou manter para lançar outro exame do mesmo paciente?
+            // Vou manter o ID lá caso queira lançar outro exame para a mesma pessoa.
         } else {
             Swal.fire('Erro', res.message, 'error');
         }
@@ -169,4 +177,3 @@ async function lancarExame() {
         Swal.fire('Erro', 'Falha na conexão.', 'error');
     }
 }
-

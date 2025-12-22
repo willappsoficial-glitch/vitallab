@@ -117,30 +117,37 @@ function renderizarTabela(exames, elementoTabela) {
     exames.forEach(ex => {
         let acao = '';
         
-        // Limpa os textos para comparar
+        // --- 1. TRATAMENTO DA DATA (NOVO) ---
+        let dataExibicao = ex.data;
+        // Se a data tiver o "T" de Timezone (ex: 2025-12-22T03:00...), vamos formatar
+        if (ex.data && String(ex.data).includes('T')) {
+            let dataObj = new Date(ex.data);
+            // Pega o dia, mês e ano em UTC para não dar erro de fuso horário (-3h)
+            let dia = String(dataObj.getUTCDate()).padStart(2, '0');
+            let mes = String(dataObj.getUTCMonth() + 1).padStart(2, '0'); // Mês começa em 0 no JS
+            let ano = dataObj.getUTCFullYear();
+            dataExibicao = `${dia}/${mes}/${ano}`;
+        }
+        // ------------------------------------
+
+        // Normaliza textos
         let statusTexto = ex.status ? String(ex.status).trim() : "";
         let statusParaComparar = statusTexto.toLowerCase();
         let pagamentoNormalizado = ex.pagamento ? ex.pagamento.trim().toLowerCase() : "";
         let temLink = ex.link && ex.link.length > 10;
         
-        // === COR DO STATUS (AGORA DEPENDE SÓ DO TEXTO) ===
-        // Padrão é Laranja (Processando)
-        let corBg = "#fd7e14"; // Laranja
-        
-        // Só vira Verde se estiver escrito explicitamente "Pronto"
+        // Cores
+        let corBg = "#fd7e14"; // Laranja (Padrão)
         if (statusParaComparar === 'pronto') {
             corBg = "#198754"; // Verde
         }
-
-        // Estilo forçado inline para garantir que o CSS não atrapalhe
         let styleStatus = `background-color: ${corBg} !important; color: white !important; border: none !important;`;
 
-        // Cor do Pagamento
         let corPag = pagamentoNormalizado === 'pago' 
             ? "background-color: #198754 !important; color: white !important;" 
             : "background-color: #dc3545 !important; color: white !important;";
 
-        // === BOTÕES (AÇÃO) ===
+        // Botões
         if (pagamentoNormalizado === 'pendente') {
             acao = `<button onclick="pagarPix('${ex.nome}')" class="btn btn-sm btn-danger shadow-sm"><i class="fas fa-qrcode me-1"></i> Pagar</button>`;
         } else if (pagamentoNormalizado === 'pago') {
@@ -156,16 +163,15 @@ function renderizarTabela(exames, elementoTabela) {
         html += `
             <tr>
                 <td data-label="Exame"><strong>${ex.nome}</strong></td>
-                <td data-label="Data">${ex.data}</td>
+                
+                <td data-label="Data">${dataExibicao}</td>
                 
                 <td data-label="Status">
                     <span class="badge" style="${styleStatus}">${statusTexto}</span>
                 </td>
-                
                 <td data-label="Pagamento">
                     <span class="badge" style="${corPag}">${ex.pagamento}</span>
                 </td>
-                
                 <td data-label="Ação" class="text-end">${acao}</td>
             </tr>`;
     });
@@ -225,6 +231,7 @@ function copiarPix() {
     btn.innerText = "Copiado!";
     setTimeout(() => { btn.innerText = originalText; }, 2000);
 }
+
 
 
 

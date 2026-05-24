@@ -168,7 +168,10 @@ function renderizarTabela(exames, elementoTabela) {
     elementoTabela.innerHTML = html;
 }
 
-// ... Manter funções logout e pagarPix (são apenas frontend) ...
+// ======================================================
+// 3. FUNÇÕES GERAIS (Logout e Pix)
+// ======================================================
+
 function logout() {
     localStorage.removeItem('pacienteId');
     localStorage.removeItem('pacienteNome');
@@ -176,33 +179,42 @@ function logout() {
 }
 
 function pagarPix(nomeExame) {
-    // Código PIX e Lógica do SweetAlert
-    const pixPayload = "00020126330014BR.GOV.BCB.PIX0111092503854715204000053039865802BR5925Francisco Williano Pereir6009SAO PAULO62140510xS9tq7FMms6304B42F"; 
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(pixPayload)}`;
+    // Chave PIX Aleatória Oficial - LG Lab
+    const chavePix = "378a6d5a-97b8-49a9-b0fe-93d0d1b6822c"; 
 
     Swal.fire({
         title: 'Pagamento via PIX',
         html: `
             <p class="mb-3">Libere o resultado de <strong>${nomeExame}</strong>.</p>
-            <div class="bg-white p-3 rounded mb-3 border d-inline-block">
-                <img src="${qrCodeUrl}" class="img-fluid" style="max-width: 200px">
-            </div>
-            <p class="small text-muted mb-2">Aponte a câmera do seu celular</p>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control form-control-sm" value="${pixPayload}" id="pixCopiaCola" readonly>
+            
+            <p class="small text-muted mb-2">Copie a chave aleatória abaixo e cole na área PIX do seu banco:</p>
+            
+            <div class="input-group mb-3 mt-3">
+                <input type="text" class="form-control form-control-sm text-center fw-bold" style="font-size: 0.85rem;" value="${chavePix}" id="pixCopiaCola" readonly>
                 <button class="btn btn-outline-secondary btn-sm" onclick="copiarPix()">Copiar</button>
+            </div>
+            
+            <div class="alert alert-warning p-2 mt-3 small text-start">
+                <i class="fas fa-info-circle me-1"></i> <strong>Aviso:</strong> Para sua segurança, envie o comprovante para o nosso WhatsApp após o pagamento.
             </div>
         `,
         confirmButtonText: 'Já fiz o pagamento',
-        confirmButtonColor: '#21409a',
+        confirmButtonColor: '#21409a', // Azul LG Lab
         showCancelButton: true,
         cancelButtonText: 'Fechar'
     });
 }
 
+// Função auxiliar para copiar o código
 function copiarPix() {
     const copyText = document.getElementById("pixCopiaCola");
     copyText.select();
     copyText.setSelectionRange(0, 99999); 
     navigator.clipboard.writeText(copyText.value);
+    
+    // Feedback visual rápido
+    const btn = document.querySelector('.input-group button');
+    const originalText = btn.innerText;
+    btn.innerText = "Copiado!";
+    setTimeout(() => { btn.innerText = originalText; }, 2000);
 }
